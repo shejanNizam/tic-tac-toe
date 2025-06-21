@@ -2,10 +2,7 @@ import { useState } from "react";
 import Square from "./components/Square";
 import calculateWinner from "./utils/utils";
 
-export default function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
-
+function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
 
@@ -27,8 +24,7 @@ export default function Board() {
     } else {
       newSquare[i] = "0";
     }
-    setSquares(newSquare);
-    setXIsNext(!xIsNext);
+    onPlay();
   }
 
   return (
@@ -52,5 +48,34 @@ export default function Board() {
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
     </>
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [xIsNext, setXIsNext] = useState(true);
+
+  const currentSquares = history[history.length - 1];
+
+  const handlePlay = (nextSquares) => {
+    setXIsNext(!xIsNext);
+    setHistory([...history, nextSquares]);
+  };
+
+  return (
+    <div className="flex">
+      <div>
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <>
+        <ol>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+        </ol>
+      </>
+    </div>
   );
 }
